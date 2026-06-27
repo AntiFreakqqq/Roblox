@@ -4,9 +4,19 @@ local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "PremiumTargetGui"
+ScreenGui.Name = "DeltaTargetControl"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = game:CoreGui
+ScreenGui.DisplayOrder = 99999
+
+local parentObj = nil
+if gethui then
+    parentObj = gethui()
+elseif game:GetService("CoreGui"):FindFirstChild("RobloxGui") then
+    parentObj = game:GetService("CoreGui").RobloxGui
+else
+    parentObj = LocalPlayer:WaitForChild("PlayerGui")
+end
+ScreenGui.Parent = parentObj
 
 local config = { speed = 15, distance = 3, amplitude = 2.5 }
 local menuOpen, selectedPlayer, activeMode, loopConnection = false, nil, nil, nil
@@ -43,22 +53,24 @@ local function drag(gui)
 end
 
 local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 60, 0, 60)
-ToggleButton.Position = UDim2.new(0, 40, 0, 40)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ToggleButton.Size = UDim2.new(0, 65, 0, 65)
+ToggleButton.Position = UDim2.new(0, 20, 0, 120)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.Text = "MENU"
 ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.TextSize = 14
+ToggleButton.TextSize = 13
+ToggleButton.ZIndex = 999
 ToggleButton.Parent = ScreenGui
-round(ToggleButton, 30)
+round(ToggleButton, 33)
 drag(ToggleButton)
 
 local MainMenu = Instance.new("Frame")
 MainMenu.Size = UDim2.new(0, 340, 0, 360)
 MainMenu.Position = UDim2.new(0.5, -170, 0.5, -180)
-MainMenu.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+MainMenu.BackgroundColor3 = Color3.fromRGB(14, 14, 14)
 MainMenu.Visible = false
+MainMenu.ZIndex = 999
 MainMenu.Parent = ScreenGui
 round(MainMenu, 14)
 
@@ -69,6 +81,7 @@ Title.Text = "TARGET CONTROL SYSTEM v2"
 Title.TextColor3 = Color3.fromRGB(240, 240, 240)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 15
+Title.ZIndex = 1000
 Title.Parent = MainMenu
 local TargetLabel = Instance.new("TextLabel")
 TargetLabel.Size = UDim2.new(1, -30, 0, 25)
@@ -78,39 +91,43 @@ TargetLabel.Text = "ЦЕЛЬ: НЕ ВЫБРАНА"
 TargetLabel.TextColor3 = Color3.fromRGB(255, 170, 0)
 TargetLabel.Font = Enum.Font.GothamBold
 TargetLabel.TextSize = 12
+TargetLabel.ZIndex = 1000
 TargetLabel.TextXAlignment = Enum.TextXAlignment.Left
 TargetLabel.Parent = MainMenu
 
 local DropdownToggle = Instance.new("TextButton")
 DropdownToggle.Size = UDim2.new(1, -30, 0, 35)
 DropdownToggle.Position = UDim2.new(0, 15, 0, 75)
-DropdownToggle.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+DropdownToggle.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
 DropdownToggle.TextColor3 = Color3.fromRGB(200, 200, 200)
 DropdownToggle.Text = "Выбрать игрока из списка          ▶"
 DropdownToggle.Font = Enum.Font.GothamMedium
-DropdownToggle.TextSize = 13
+DropdownToggle.TextSize = 12
+DropdownToggle.ZIndex = 1000
 DropdownToggle.Parent = MainMenu
 round(DropdownToggle, 6)
 
 local BackBtn = Instance.new("TextButton")
 BackBtn.Size = UDim2.new(0, 145, 0, 40)
 BackBtn.Position = UDim2.new(0, 15, 0, 125)
-BackBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+BackBtn.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
 BackBtn.TextColor3 = Color3.fromRGB(255, 70, 70)
 BackBtn.Text = "ТАРГЕТ СПИНА: ВЫКЛ"
 BackBtn.Font = Enum.Font.GothamBold
-BackBtn.TextSize = 11
+BackBtn.TextSize = 10
+BackBtn.ZIndex = 1000
 BackBtn.Parent = MainMenu
 round(BackBtn, 6)
 
 local FaceBtn = Instance.new("TextButton")
 FaceBtn.Size = UDim2.new(0, 155, 0, 40)
 FaceBtn.Position = UDim2.new(0, 170, 0, 125)
-FaceBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+FaceBtn.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
 FaceBtn.TextColor3 = Color3.fromRGB(255, 70, 70)
 FaceBtn.Text = "ЛИЦО (ДЕЛЬФИН): ВЫКЛ"
 FaceBtn.Font = Enum.Font.GothamBold
-FaceBtn.TextSize = 11
+FaceBtn.TextSize = 10
+FaceBtn.ZIndex = 1000
 FaceBtn.Parent = MainMenu
 round(FaceBtn, 6)
 
@@ -119,6 +136,7 @@ local function createSlider(name, min, max, default, orderY, callback)
     SliderFrame.Size = UDim2.new(1, -30, 0, 45)
     SliderFrame.Position = UDim2.new(0, 15, 0, orderY)
     SliderFrame.BackgroundTransparency = 1
+    SliderFrame.ZIndex = 1000
     SliderFrame.Parent = MainMenu
 
     local Label = Instance.new("TextLabel")
@@ -128,19 +146,22 @@ local function createSlider(name, min, max, default, orderY, callback)
     Label.TextColor3 = Color3.fromRGB(180, 180, 180)
     Label.Font = Enum.Font.Gotham
     Label.TextSize = 12
+    Label.ZIndex = 1001
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.Parent = SliderFrame
 
     local Track = Instance.new("Frame")
     Track.Size = UDim2.new(1, 0, 0, 6)
     Track.Position = UDim2.new(0, 0, 0, 25)
-    Track.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Track.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Track.ZIndex = 1001
     Track.Parent = SliderFrame
     round(Track, 3)
 
     local Fill = Instance.new("Frame")
     Fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
     Fill.BackgroundColor3 = Color3.fromRGB(255, 170, 0)
+    Fill.ZIndex = 1002
     Fill.Parent = Track
     round(Fill, 3)
 
@@ -148,6 +169,7 @@ local function createSlider(name, min, max, default, orderY, callback)
     Trigger.Size = UDim2.new(1, 0, 1, 0)
     Trigger.BackgroundTransparency = 1
     Trigger.Text = ""
+    Trigger.ZIndex = 1003
     Trigger.Parent = Track
 
     local function updateSlider(input)
@@ -182,10 +204,10 @@ createSlider("Амплитуда (Размах)", 1, 6, config.amplitude, 295, f
 local PlayerList = Instance.new("ScrollingFrame")
 PlayerList.Size = UDim2.new(0, 310, 0, 140)
 PlayerList.Position = UDim2.new(0, 15, 0, 115)
-PlayerList.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
+PlayerList.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 PlayerList.BorderSizePixel = 0
 PlayerList.Visible = false
-PlayerList.ZIndex = 5
+PlayerList.ZIndex = 2000
 PlayerList.ScrollBarThickness = 4
 PlayerList.Parent = MainMenu
 round(PlayerList, 6)
@@ -203,12 +225,12 @@ local function updateDropdown()
             count = count + 1
             local PBtn = Instance.new("TextButton")
             PBtn.Size = UDim2.new(1, 0, 0, 30)
-            PBtn.BackgroundColor3 = Color3.fromRGB(16, 16, 16)
+            PBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
             PBtn.TextColor3 = Color3.fromRGB(230, 230, 230)
             PBtn.Text = p.DisplayName .. " (@" .. p.Name .. ")"
             PBtn.Font = Enum.Font.Gotham
             PBtn.TextSize = 12
-            PBtn.ZIndex = 6
+            PBtn.ZIndex = 2001
             PBtn.Parent = PlayerList
             
             PBtn.MouseButton1Click:Connect(function()
